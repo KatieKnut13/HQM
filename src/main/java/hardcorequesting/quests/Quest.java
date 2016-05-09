@@ -27,7 +27,7 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.List;
-
+//Meat of the program, it is bringing everything together.
 public class Quest {
 
     private static Map<Short, Quest> quests;
@@ -57,7 +57,7 @@ public class Quest {
     //    new Quest(0, "The burnt village","Testing 1.2.3", 50, 50, false);
     //}
 
-
+//Building up resources, and setting aside memory for all the variables.
     private short id;
     private String name;
     private String description;
@@ -87,7 +87,7 @@ public class Quest {
     private QuestSet set;
     private int selectedReward = -1;
     private final List<LargeButton> buttons = new ArrayList<LargeButton>();
-
+//Building the UI, mostly event handlers to respond to user input/actions
     {
         buttons.add(new LargeButton("hqm.quest.claim", 100, 190) {
             @Override
@@ -228,7 +228,7 @@ public class Quest {
                     taskType.addTask(Quest.this);
                 }
             });
-
+//?????????????
             if (QuestTaskItems.class.isAssignableFrom(taskType.clazz)) {
                 buttons.add(new LargeButton(taskType.getLangKeyName(), taskType.getLangKeyDescription(), 185 + (itemIds % 2) * 65, 50 + (itemIds / 2) * 35) {
                     @Override
@@ -245,7 +245,7 @@ public class Quest {
                     public void onClick(GuiBase gui, EntityPlayer player) {
                         TaskType oldTaskType = TaskType.getType(selectedTask.getClass());
                         if (oldTaskType == null) return;
-
+//adds new task to the sequence or main quest that pulls in all the required information for that task.
                         nextTaskId--;
                         Class<? extends QuestTask> clazz = taskType.clazz;
                         try {
@@ -289,7 +289,7 @@ public class Quest {
             }
         }
     }
-
+//More constructors to be used continually
     private Quest self = this;
     private final ScrollBar descriptionScroll;
     private final ScrollBar taskDescriptionScroll;
@@ -297,7 +297,7 @@ public class Quest {
     private final List<ScrollBar> scrollBars = new ArrayList<ScrollBar>();
     private static final int VISIBLE_DESCRIPTION_LINES = 7;
     private static final int VISIBLE_TASKS = 3;
-
+//When it reaches a certain point a scroll bar will be used
     {
         scrollBars.add(descriptionScroll = new ScrollBar(155, 28, 64, 249, 102, START_X) {
             @Override
@@ -320,7 +320,7 @@ public class Quest {
         });
     }
 
-
+//Constructor for a quest. This has the requirements that you need such as ID, name, Large quest, coordinates...
     public Quest(int id, String name, String description, int x, int y, boolean isBig) {
         this.id = (short) id;
         this.name = name;
@@ -344,7 +344,7 @@ public class Quest {
             QuestLine.getActiveQuestLine().questCount = this.id + 1;
         }
     }
-
+//You can set a location by X and Y you will have to find it in the quest for you to get rewards
     public void setX(int x) {
         this.x = x;
     }
@@ -416,12 +416,12 @@ public class Quest {
         QuestLine.getActiveQuestLine().mainDescription = mainDescription;
         QuestLine.getActiveQuestLine().cachedMainDescription = null;
     }
-
+//adds a requirement or task to the quest with the signified id
     public void addRequirement(int id) {
         if (lookForId(id, false) || lookForId(id, true)) {
             return;
         }
-
+//get the currently active quest line
         Quest quest = QuestLine.getActiveQuestLine().quests.get((short) id);
         if (quest != null) {
             requirement.add(quest);
@@ -429,7 +429,7 @@ public class Quest {
             SaveHelper.add(SaveHelper.EditType.REQUIREMENT_CHANGE);
         }
     }
-
+//You can do a quest backwards if indicated by the ID number
     private boolean lookForId(int id, boolean reversed) {
         List<Quest> quests = reversed ? reversedRequirement : requirement;
         for (Quest quest : quests) {
